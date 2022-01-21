@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace tiktokVideo
 {
@@ -11,6 +10,7 @@ namespace tiktokVideo
         static string path = AppDomain.CurrentDomain.BaseDirectory;
         static void Main(string[] args)
         {
+            //args = new string[] { @"\video.txt" };
             //Render Extension
             bool renderExtension = File.Exists(path + "ffmpeg_parser.exe");
             if(renderExtension)
@@ -22,7 +22,12 @@ namespace tiktokVideo
                 Directory.CreateDirectory(path + @"\input_videos");
                 Directory.CreateDirectory(path + @"\download_video");
                 if (File.Exists("logo.png"))
-                    File.Copy("logo.png", path + "logo.png");
+                    try
+                    {
+                        File.Copy("logo.png", path + "logo.png");
+                    }
+                    catch
+                    {}
                 path += @"\download_video\";
             }
             if (args.Length != 0)
@@ -51,6 +56,7 @@ namespace tiktokVideo
 
         public static TimeSpan GetTime()
         {
+            Console.WriteLine("Enter time to sort videos by time:");
             Console.WriteLine("Minute:");
             int min;
             Int32.TryParse(ReadLine(), out min);
@@ -63,7 +69,7 @@ namespace tiktokVideo
         }
 
         delegate string ReadLineDelegate();
-        public static string ReadLine(int timeoutms = 5000)
+        public static string ReadLine(int timeoutms = 7000)
         {
             ReadLineDelegate d = Console.ReadLine;
             IAsyncResult result = d.BeginInvoke(null, null);
