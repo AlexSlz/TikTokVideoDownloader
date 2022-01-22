@@ -36,10 +36,10 @@ namespace tiktokVideo
                     }
                     catch
                     { }
-                if (File.Exists("intro.mp4"))
+                if (File.Exists("intro.webm"))
                     try
                     {
-                        File.Copy("intro.mp4", Path.Combine(path, "intro.mp4"));
+                        File.Copy("intro.webm", Path.Combine(path, "intro.webm"));
                     }
                     catch
                     { }
