@@ -25,10 +25,31 @@ namespace tiktokVideo
                 if (File.Exists("logo.png"))
                     try
                     {
-                        File.Copy("logo.png", path + "logo.png");
+                        File.Copy("logo.png", Path.Combine(path, "logo.png"));
                     }
                     catch
                     {}
+                if (File.Exists("between.mp4"))
+                    try
+                    {
+                        File.Copy("between.mp4", Path.Combine(path, "insert_between", "between.mp4"));
+                    }
+                    catch
+                    { }
+                if (File.Exists("intro.mp4"))
+                    try
+                    {
+                        File.Copy("intro.mp4", Path.Combine(path, "intro.mp4"));
+                    }
+                    catch
+                    { }
+                if (File.Exists("end.mp4"))
+                    try
+                    {
+                        File.Copy("end.mp4", Path.Combine(path, "end.mp4"));
+                    }
+                    catch
+                    { }
                 path += @"\download_video\";
             }
             FileManager fManager = new FileManager(path);
