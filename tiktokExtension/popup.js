@@ -1,7 +1,8 @@
-loadData()
+setInterval(loadData, 300)
 function loadData() {
   chrome.storage.local.get('videoStorage', function (result) {
     if (result.videoStorage != undefined) {
+      removeOptions()
       result.videoStorage.forEach((item) => {
         if (item !== null) addLinkTolist(item.title, item.link)
       })
@@ -13,6 +14,7 @@ function loadData() {
       document.getElementById('myCheckBox').checked = result.checkboxStorage
     }
   })
+
   var m = document.getElementById('m')
 
   m.oninput = function () {
@@ -44,6 +46,14 @@ function loadData() {
       time.value = result.timeStorage
     }
   })
+}
+
+function removeOptions() {
+  var i,
+    L = document.getElementById('listUrlVideo').options.length - 1
+  for (i = L; i >= 0; i--) {
+    document.getElementById('listUrlVideo').remove(i)
+  }
 }
 
 function addLinkTolist(name, link) {

@@ -11,9 +11,11 @@ namespace tiktokVideo
     internal class FileManager
     {
         private string path;
+        private string addPath;
         public FileManager(string _path)
         {
             path = _path;
+            addPath = Path.Combine(path, (path.Contains("download_video")) ? @"..\.." : "", "add_video");
         }
         System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
         public string Download(string fileName, string folderName, bool CustomInterface = true)
@@ -39,9 +41,17 @@ namespace tiktokVideo
                 Task.WaitAll(tasks.ToArray());
             }
             watch.Stop();
+            if (Directory.Exists(addPath))
+            {
+                CopyAddFile(folderName, data.Length);
+            }
             return $"All File Download, time: {watch.ElapsedMilliseconds} ms.";
         }
-
+        private void CopyAddFile(string folderName, int lastIndex = 0)
+        {
+            List<string> allFiles = Directory.GetFiles(addPath, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".mp4")).ToList();
+            allFiles.ForEach(file => { File.Copy(file, Path.Combine(path, folderName, $"{lastIndex++}.mp4")); });
+        }
         private void DrawInterface(List<Task> tasks)
         {
             bool run = true;
@@ -99,23 +109,32 @@ namespace tiktokVideo
                      .Select(x => x.Select(v => v.Value).ToList())
                      .ToList();
         }
-        public string Render(string folderName, string inPutFolder = "input_videos", string outPutFolder = "output")
+        public string Render(string folderName, string secondFolderName = "", string inPutFolder = "input_videos", string outPutFolder = "output")
         {
             Console.WriteLine("Start render.");
             watch.Start();
-            List<string> allDirectories = Directory.GetDirectories(path + folderName).ToList();
+            List<string> allDirectories = Directory.GetDirectories(Path.Combine(path, folderName, secondFolderName)).ToList();
             int renderIndex = 0;
+            if(allDirectories.Count == 0)
+            {
+                RenderVideo(Path.Combine(path, folderName, secondFolderName), inPutFolder, renderIndex++);
+            }
             allDirectories.ForEach(dir => {
-                SendToRenderFolder(dir, inPutFolder);
-                Console.WriteLine($"- Render #{renderIndex} Start.");
-                System.Diagnostics.Process renderProcess = System.Diagnostics.Process.Start("ffmpeg_parser.exe");
-                renderProcess.WaitForExit();
-                RenameRenderVideo(outPutFolder);
-                Console.WriteLine($"- Render #{renderIndex++} End.");
+                RenderVideo(dir, inPutFolder, renderIndex++);
             });
             watch.Stop();
             return $"All Video Render, time: {watch.ElapsedMilliseconds} ms.";
         }
+
+        private void RenderVideo(string dir, string inPutFolder, int renderIndex)
+        {
+            SendToRenderFolder(dir, inPutFolder);
+            Console.WriteLine($"- Render #{renderIndex} Start.");
+            System.Diagnostics.Process renderProcess = System.Diagnostics.Process.Start("ffmpeg_parser.exe");
+            renderProcess.WaitForExit();
+            Console.WriteLine($"- Render #{renderIndex} End.");
+        }
+
         private void SendToRenderFolder(string dir, string inPutFolder)
         {
             inPutFolder = Path.Combine(path, "..", inPutFolder);
@@ -124,16 +143,7 @@ namespace tiktokVideo
             List<string> allFiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".mp4")).ToList(); ;
             allFiles.ForEach(file =>
             {
-                File.Move(file, Path.Combine(Path.Combine(inPutFolder, Path.GetFileName(file))));
-            });
-        }
-        public void RenameRenderVideo(string outPutFolder)
-        {
-            outPutFolder = Path.Combine(path, "..", outPutFolder, $"{DateTime.Now.ToString("dd_MM_yyyy-hh_mm_ss_ms")}");
-            Directory.CreateDirectory(outPutFolder);
-            List<string> allFiles = Directory.GetFiles(Path.Combine(outPutFolder, ".."), "*.*", SearchOption.AllDirectories).Where(s => s.EndsWith(".mp4")).ToList();
-            allFiles.ForEach(file => {
-                File.Move(file, Path.Combine(outPutFolder, Path.GetFileName(file)));
+                File.Copy(file, Path.Combine(Path.Combine(inPutFolder, Path.GetFileName(file))));
             });
         }
     }

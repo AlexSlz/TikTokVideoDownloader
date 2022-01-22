@@ -55,7 +55,6 @@ async function getDataFromStorage(key) {
         resolve(value[key])
       })
     } catch (ex) {
-      console.error(ex)
       reject([])
     }
   })
