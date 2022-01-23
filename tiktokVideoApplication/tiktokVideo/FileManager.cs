@@ -146,5 +146,19 @@ namespace tiktokVideo
                 File.Copy(file, Path.Combine(Path.Combine(inPutFolder, Path.GetFileName(file))));
             });
         }
+        public void checkCustomFiles(CustomFiles[] customFiles)
+        {
+            customFiles.ToList().ForEach(item => {
+                string[] file = Directory.GetFiles(path, item.name + ".*");
+                if (file.Length > 0)
+                {
+                    try
+                    {
+                        File.Copy(file[0], Path.Combine(path, item.path, Path.GetFileName(file[0])));
+                    }
+                    catch {}
+                }
+            });
+        }
     }
 }

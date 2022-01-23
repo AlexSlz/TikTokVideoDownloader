@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
-
 namespace tiktokVideo
 {
     internal class Program
@@ -10,6 +9,7 @@ namespace tiktokVideo
         static string path = AppDomain.CurrentDomain.BaseDirectory;
         static void Main(string[] args)
         {
+            CustomFiles[] customFiles = { new CustomFiles("logo", ""), new CustomFiles("logo", ""), new CustomFiles("between", "insert_between"), new CustomFiles("intro", ""), new CustomFiles("end", "") };
             //args = new string[] { @"\video.txt" };
             //Render Extension
             Directory.CreateDirectory(path + "add_video");
@@ -22,37 +22,11 @@ namespace tiktokVideo
                 Directory.CreateDirectory(path + @"\insert_between");
                 Directory.CreateDirectory(path + @"\input_videos");
                 Directory.CreateDirectory(path + @"\download_video");
-                if (File.Exists("logo.png"))
-                    try
-                    {
-                        File.Copy("logo.png", Path.Combine(path, "logo.png"));
-                    }
-                    catch
-                    {}
-                if (File.Exists("between.mp4"))
-                    try
-                    {
-                        File.Copy("between.mp4", Path.Combine(path, "insert_between", "between.mp4"));
-                    }
-                    catch
-                    { }
-                if (File.Exists("intro.webm"))
-                    try
-                    {
-                        File.Copy("intro.webm", Path.Combine(path, "intro.webm"));
-                    }
-                    catch
-                    { }
-                if (File.Exists("end.mp4"))
-                    try
-                    {
-                        File.Copy("end.mp4", Path.Combine(path, "end.mp4"));
-                    }
-                    catch
-                    { }
                 path += @"\download_video\";
             }
             FileManager fManager = new FileManager(path);
+            if (renderExtension)
+                fManager.checkCustomFiles(customFiles);
             if (args.Length != 0)
             {
                 foreach(string arg in args)
