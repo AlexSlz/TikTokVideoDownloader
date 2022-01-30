@@ -74,9 +74,11 @@ namespace tiktokVideo
             int countVideoFolder = GetCountDirToSort(allFiles, videoTime);
             List<List<string>> allDirectory = DivideArray(allFiles, countVideoFolder);
             int dirCount = 0;
-            allDirectory.ForEach(dir => {
+            allDirectory.ForEach(dir =>
+            {
                 Directory.CreateDirectory($@"{path}{folderName}\{dirCount}");
-                dir.ForEach(file => {
+                dir.ForEach(file =>
+                {
                     File.Move(file, $@"{path}{folderName}\{dirCount}\{Path.GetFileName(file)}");
                 });
                 dirCount++;
@@ -84,6 +86,8 @@ namespace tiktokVideo
 
             return $"All files are sorted in {countVideoFolder} folders.";
         }
+
+
 
         private int GetCountDirToSort(List<string> allFiles, TimeSpan videoTime)
         {
@@ -94,8 +98,8 @@ namespace tiktokVideo
                 allVideoTime += TimeSpan.FromSeconds(player.newMedia($"{file}").duration);
                 if (allVideoTime > videoTime)
                 {
+                    Console.WriteLine($"Folder{countVideoFolder++} - Time - {allVideoTime}");
                     allVideoTime = TimeSpan.Zero;
-                    countVideoFolder++;
                 }
             });
             return (countVideoFolder == 0) ? 1 : countVideoFolder;
